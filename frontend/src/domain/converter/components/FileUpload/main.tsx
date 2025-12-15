@@ -72,7 +72,7 @@ function FileUpload({ onFileSelect, disabled = false, error }: FileUploadProps) 
 
         <div className="flex flex-col items-center gap-2 text-center">
           <p className="text-foreground text-base font-medium">
-            {isDragging ? 'Solte o arquivo aqui' : 'Arraste e solte seu arquivo JPG'}
+            {isDragging ? 'Solte o arquivo aqui' : 'Arraste e solte seu arquivo JPG ou PNG'}
           </p>
           <p className="text-muted-foreground text-sm">ou</p>
           <Button
@@ -89,16 +89,18 @@ function FileUpload({ onFileSelect, disabled = false, error }: FileUploadProps) 
           </Button>
         </div>
 
-        <p className="text-muted-foreground text-xs">Formatos aceitos: JPG, JPEG (máx. 10MB)</p>
+        <p className="text-muted-foreground text-xs">
+          Formatos aceitos: JPG, JPEG, PNG (máx. 10MB)
+        </p>
 
         <input
           ref={fileInputRef}
           type="file"
-          accept="image/jpeg,image/jpg"
+          accept="image/jpeg,image/jpg,image/png"
           onChange={handleFileChange}
           disabled={disabled}
           className="hidden"
-          aria-label="Selecionar arquivo JPG"
+          aria-label="Selecionar arquivo JPG ou PNG"
         />
       </div>
 

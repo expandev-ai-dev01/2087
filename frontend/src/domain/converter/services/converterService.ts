@@ -1,27 +1,27 @@
 import DOMPurify from 'dompurify';
 import type { ConversionResult, FileValidation } from '../types/models';
-import { fileSchema, validateJPGHeader } from '../validations/file';
+import { fileSchema, validateImageFile } from '../validations/file';
 
 /**
  * @service ConverterService
  * @domain converter
- * @type Client-side service for JPG to Base64 conversion
+ * @type Client-side service for JPG/PNG to Base64 conversion
  */
 export const converterService = {
   /**
-   * Validates a file against JPG requirements
+   * Validates a file against JPG/PNG requirements
    */
   async validateFile(file: File): Promise<FileValidation> {
     try {
       // Zod validation
       fileSchema.parse(file);
 
-      // Magic bytes validation
-      const hasValidHeader = await validateJPGHeader(file);
-      if (!hasValidHeader) {
+      // Format-specific validation
+      const validation = await validateImageFile(file);
+      if (!validation.isValid) {
         return {
           isValid: false,
-          error: 'O arquivo não possui estrutura JPG válida',
+          error: validation.error || 'Arquivo inválido',
         };
       }
 
@@ -41,7 +41,7 @@ export const converterService = {
   },
 
   /**
-   * Converts a JPG file to Base64 string
+   * Converts a JPG/PNG file to Base64 string
    */
   async convertToBase64(file: File): Promise<ConversionResult> {
     return new Promise((resolve, reject) => {

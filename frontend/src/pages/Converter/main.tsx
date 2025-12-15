@@ -22,7 +22,7 @@ function ConverterPage() {
   } = useConverter();
 
   useEffect(() => {
-    document.title = 'Convert64 - Conversor JPG para Base64';
+    document.title = 'Convert64 - Conversor JPG/PNG para Base64';
   }, []);
 
   const isProcessing = status.status === 'validating' || status.status === 'converting';
@@ -34,14 +34,14 @@ function ConverterPage() {
     <div className="mx-auto w-full max-w-4xl space-y-6 py-8">
       <header className="space-y-2 text-center">
         <h1 className="text-primary text-4xl font-bold tracking-tight">Convert64</h1>
-        <p className="text-muted-foreground text-lg">Conversor de JPG para Base64</p>
+        <p className="text-muted-foreground text-lg">Conversor de JPG/PNG para Base64</p>
       </header>
 
       <Card className="shadow-lg">
         <CardHeader>
           <CardTitle>Upload de Arquivo</CardTitle>
           <CardDescription>
-            Selecione ou arraste um arquivo JPG para converter em Base64
+            Selecione ou arraste um arquivo JPG ou PNG para converter em Base64
           </CardDescription>
         </CardHeader>
 
