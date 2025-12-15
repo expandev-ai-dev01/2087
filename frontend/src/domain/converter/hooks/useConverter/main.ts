@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { converterService } from '../../services/converterService';
 import { useConverterStore } from '../../stores/converterStore';
 import type { ConversionResult } from '../../types/models';
+import { toast } from 'sonner';
 
 export const useConverter = () => {
   const { file, result, status, setFile, setResult, setStatus, reset } = useConverterStore();
@@ -40,10 +41,12 @@ export const useConverter = () => {
       const conversionResult: ConversionResult = await converterService.convertToBase64(file);
       setResult(conversionResult);
       setStatus({ status: 'completed' });
+      toast.success('Conversão concluída com sucesso!');
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Falha ao processar o arquivo. Tente novamente';
       setStatus({ status: 'error', error: errorMessage });
+      toast.error(errorMessage);
     }
   };
 
@@ -54,18 +57,24 @@ export const useConverter = () => {
 
     if (success) {
       setCopySuccess(true);
+      toast.success('Copiado para a área de transferência!');
       setTimeout(() => setCopySuccess(false), 2000);
     } else {
-      setStatus({
-        status: 'error',
-        error: 'Não foi possível copiar para a área de transferência',
-      });
+      toast.error('Não foi possível copiar para a área de transferência');
     }
   };
 
-  const handleDownload = () => {
-    if (!result?.base64String || !result?.fileName) return;
-    converterService.downloadAsTxt(result.base64String, result.fileName);
+  const handleDownload = async () => {
+    if (!result?.base64String) return;
+
+    try {
+      await converterService.downloadAsTxt(result.base64String);
+      toast.success('Download iniciado com sucesso!');
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Não foi possível iniciar o download do arquivo';
+      toast.error(errorMessage);
+    }
   };
 
   const handleReset = () => {

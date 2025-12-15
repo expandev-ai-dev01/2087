@@ -1,6 +1,7 @@
 import DOMPurify from 'dompurify';
 import type { ConversionResult, FileValidation } from '../types/models';
 import { fileSchema, validateImageFile } from '../validations/file';
+import { downloadService } from './downloadService';
 
 /**
  * @service ConverterService
@@ -97,19 +98,13 @@ export const converterService = {
   },
 
   /**
-   * Downloads Base64 result as TXT file
+   * Downloads Base64 result as TXT file with automatic generation
    */
-  downloadAsTxt(base64String: string, originalFileName: string): void {
-    const blob = new Blob([base64String], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    const fileName = originalFileName.replace(/\.[^/.]+$/, '') + '_base64.txt';
+  async downloadAsTxt(base64String: string): Promise<void> {
+    const result = await downloadService.downloadBase64AsTxt(base64String);
 
-    link.href = url;
-    link.download = DOMPurify.sanitize(fileName);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+    if (!result.success && result.error) {
+      throw new Error(result.error);
+    }
   },
 };
